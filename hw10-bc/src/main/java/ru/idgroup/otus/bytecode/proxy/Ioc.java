@@ -47,7 +47,7 @@ public class Ioc {
                     return true;
                 })
                 .findFirst()
-                .ifPresent(method1 -> System.out.println("Вызов: " + method1.getName() + ", Параметры: " +  Arrays.toString(args)));
+                .ifPresent(method1 -> System.out.println("executed method: " + method1.getName() + ", param: " +  Arrays.toString(args)));
             return method.invoke(myClass, args);
         }
 
