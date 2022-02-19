@@ -1,15 +1,12 @@
 package ru.idgroup.otus.bytecode.proxy;
 
-import org.jetbrains.annotations.NotNull;
 import ru.idgroup.otus.bytecode.annotations.Log;
 import ru.idgroup.otus.bytecode.demo.TestLogging;
 import ru.idgroup.otus.bytecode.demo.TestLoggingImpl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Ioc {
