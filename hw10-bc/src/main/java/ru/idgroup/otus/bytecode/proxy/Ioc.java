@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Ioc {
@@ -31,23 +32,21 @@ public class Ioc {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            final Method[] declaredMethods = myClass.getClass().getDeclaredMethods();
-            Arrays.stream(declaredMethods)
-                .filter(method1 -> method1.getName().equals(method.getName()) && method1.isAnnotationPresent(Log.class))
-                .filter(method1 -> {
-                    final Parameter[] parameters = method1.getParameters();
-                    if (parameters.length != args.length)
-                        return false;
+            try {
 
-                    Class<?>[] parameter_types = method1.getParameterTypes();
-                    for( int i=0;i< parameters.length;i++ ) {
-                        if (!parameter_types[0].equals(int.class))
-                            return false;
-                    }
-                    return true;
-                })
-                .findFirst()
-                .ifPresent(method1 -> System.out.println("executed method: " + method1.getName() + ", param: " +  Arrays.toString(args)));
+                //todo без такого преобразования не находит метод с примитивными типами, есть вариант лучше?
+                final Class<?>[] classes = Arrays.stream(args).map(o -> {
+                    if (o.getClass().getSimpleName().equals("Integer"))
+                        return Integer.TYPE;
+                    else
+                        return o.getClass();
+                }).toArray(Class<?>[]::new);
+                var declaredMethod = myClass.getClass().getDeclaredMethod(method.getName(), classes);
+                if (declaredMethod.isAnnotationPresent(Log.class))
+                    System.out.println("executed method: " + declaredMethod.getName() + ", param: " +  Arrays.toString(args));
+
+            } catch (Exception ignored) {
+            }
             return method.invoke(myClass, args);
         }
 
@@ -57,5 +56,6 @@ public class Ioc {
                     "myClass=" + myClass +
                     '}';
         }
+
     }
 }

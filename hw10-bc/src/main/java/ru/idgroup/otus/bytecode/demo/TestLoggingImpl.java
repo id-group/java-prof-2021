@@ -9,6 +9,7 @@ public class TestLoggingImpl implements TestLogging{
     public void calculation(int param1) {
     }
 
+    //@Log
     @Override
     public void calculation(int param1, int param2) {
     }
