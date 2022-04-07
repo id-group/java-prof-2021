@@ -33,6 +33,7 @@ allprojects {
             dependency("org.openjdk.jol:jol-core:${Versions.jol}")
             dependency("org.ow2.asm:asm-commons:${Versions.asm}")
             dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
+            dependency("net.java.dev.jna:jna:${Versions.jna}")
 
             dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
             dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
