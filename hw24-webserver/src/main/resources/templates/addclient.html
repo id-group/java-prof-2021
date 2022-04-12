@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script>
+        function addPhone() {
+            let phonesContainer = document.getElementById('phones');
+            let div = document.createElement("div");
+            phonesContainer.appendChild(div);
+            let text = document.createElement("span");
+            text.innerHTML = "Телефон: ";
+            div.appendChild(text);
+
+            let input = document.createElement("input");
+            input.type = "text";
+            input.name = "phone";
+            input.id = "phone";
+            div.appendChild(input);
+        }
+    </script>
+</head>
+<body>
+<form method="post" action="/api/client">
+    Имя: <input type="text" name="name" id="name" /><br />
+    Адрес: <input type="text" name="address" id="address" /><br />
+    <span id="phones">
+        <div>Телефон: <input type="text" name="phone" id="phone" /></div>
+    </span>
+    <input type="submit" value="Submit" />
+</form>
+<button onclick="addPhone()">Еще телефон</button><br/>
+</body>
+</html>
