@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function getUserById() {
+            const userIdTextBox = document.getElementById('userIdTextBox');
+            const userDataContainer = document.getElementById('userDataContainer');
+            const id = userIdTextBox.value;
+            //fetch('api/user?id=' + id)
+            fetch('api/client/' + id)
+                .then(response => response.json())
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        }
+    </script>
+</head>
+
+<body>
+<a href="addclient">Создать пользователя</a>
+
+<h4>Случайный пользователь</h4>
+<table style="width: 400px">
+    <thead>
+        <tr>
+            <td style="width: 50px">Id</td>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 100px">Адрес</td>
+            <td style="width: 100px">Телефон</td>
+        </tr>
+    </thead>
+    <tbody>
+        <#list clients as client>
+            <tr>
+                <td>${client.id}</td>
+                <td>${client.name}</td>
+                <td>${client.address}</td>
+                <td>
+                    <#list client.phones as phone>
+                    ${phone.number}<br/>
+                    </#list>
+                </td>
+            </tr>
+        </#list>
+    </tbody>
+</table>
+</body>
+</html>
