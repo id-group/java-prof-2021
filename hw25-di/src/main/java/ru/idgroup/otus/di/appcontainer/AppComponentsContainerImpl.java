@@ -8,7 +8,6 @@ import ru.idgroup.otus.di.appcontainer.api.AppComponentsContainerConfig;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
@@ -21,38 +20,45 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
-        // You code here...
 
-        final Object instantiate;
-        try {
-            instantiate = configClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        final Object instantiate = createInstance(configClass);
 
         final Method[] declaredMethods = configClass.getDeclaredMethods();
         Arrays.stream(declaredMethods)
                 .filter(method -> method.isAnnotationPresent(AppComponent.class))
                 .sorted(Comparator.comparing(method -> method.getAnnotation(AppComponent.class).order()))
                 .forEach(method -> {
-
-                    final Object[] args = Arrays.stream(method.getParameterTypes())
-                            .map(this::getAppComponent)
-                            .toList()
-                            .toArray();
-                    Object beanObject = this.invokeBean(instantiate, method, args);
-
-                    final AppComponent annotation = method.getAnnotation(AppComponent.class);
-                    appComponents.add(beanObject);
-                    appComponentsByName.put(annotation.name(), beanObject);
+                    addComponent(instantiate, method);
                 });
+    }
+
+    private void addComponent(Object instantiate, Method method) {
+        final Object[] args = Arrays.stream(method.getParameterTypes())
+                .map(this::getAppComponent)
+                .toArray();
+        Object beanObject = this.invokeBean(instantiate, method, args);
+
+        final AppComponent annotation = method.getAnnotation(AppComponent.class);
+
+        if( appComponentsByName.containsKey(annotation.name()) )
+            throw new RuntimeException(annotation.name() + " имя компонента должно быть уникальным.");
+        appComponents.add(beanObject);
+        appComponentsByName.put(annotation.name(), beanObject);
+    }
+
+    private Object createInstance(Class<?> configClass) {
+        try {
+            return configClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Object invokeBean(Object object, Method method, Object ... args ) {
         try {
             return method.invoke(object, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,14 +71,16 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
         final Object o1 = appComponents.stream()
-                .filter(o -> o.getClass().equals(componentClass) || List.of(o.getClass().getInterfaces()).contains(componentClass))
+                .filter(o -> componentClass.isAssignableFrom(o.getClass()) )
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Класс " + componentClass.getName() + " не найден."));
+                .orElseThrow(() -> new NoSuchElementException("Класс " + componentClass.getName() + " не найден."));
         return (C) o1;
     }
 
     @Override
     public <C> C getAppComponent(String componentName) {
+        if ( !appComponentsByName.containsKey(componentName) )
+            throw new NoSuchElementException("Класс " + componentName + " не найден.");
         return (C) appComponentsByName.get(componentName);
     }
 }
