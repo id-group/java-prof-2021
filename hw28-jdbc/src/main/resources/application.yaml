@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: usr
+    password: pwd
+    url: jdbc:postgresql://localhost:5430/demoDB
+    driver-class-name: org.postgresql.Driver
