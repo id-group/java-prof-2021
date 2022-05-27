@@ -22,7 +22,7 @@ public class Client implements Cloneable {
     @Column("client_id")
     private Address address;
 
-    @MappedCollection(idColumn = "id", keyColumn = "number")
+    @MappedCollection(idColumn = "client_id", keyColumn = "number")
     private List<Phone> phones;
 
 

@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.lang.NonNull;
 
 @Table("phone")
 public class Phone {
@@ -14,11 +15,11 @@ public class Phone {
     private final String number;
 
     @Column("client_id")
-    private Long clientId;
+    @NonNull
+    private final Long clientId;
 
-    public Phone(Long id, String number) {
-        this.id = id;
-        this.number = number;
+    public Phone(Long clientId) {
+        this(null, null, clientId);
     }
 
     @PersistenceConstructor
@@ -36,4 +37,8 @@ public class Phone {
         return number;
     }
 
+    @NonNull
+    public Long getClientId() {
+        return clientId;
+    }
 }

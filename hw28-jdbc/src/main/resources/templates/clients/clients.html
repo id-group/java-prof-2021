@@ -16,34 +16,57 @@
     </script>-->
 </head>
 
+<style>
+    body {
+        margin: 10px;
+    }
+
+    table, th, td {
+        border: 1px solid;
+    }
+
+    table.phone {
+        border: none;
+        width: 150px;
+    }
+
+    table.phone tr td{
+        border: none;
+    }
+</style>
+
 <body>
 <a href="/clients/form">Создать пользователя</a>
+<div />
 
 <div th:if="${clients != null}">
-    <table style="width: 400px">
+    <table>
         <thead>
             <tr>
-                <td style="width: 50px">Id</td>
-                <td style="width: 150px">Имя</td>
-                <td style="width: 100px">Адрес</td>
-                <td style="width: 100px">Телефон</td>
+                <th style="width: 50px">Id</th>
+                <th style="width: 150px">Имя</th>
+                <th style="width: 100px">Адрес</th>
+                <th style="width: 100px">Телефон</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="client: ${clients}">
-                <td th:text="${client.id}" />
+                <td><a th:href="@{'/clients/form?client_id=' + ${client.id}}" th:text="${client.id}" /></td>
                 <td th:text="${client.name}"/>
                 <td th:text="${client.address.street}" />
-    <!--
                 <td>
-                    <#list client.phones as phone>
-                    ${phone.number}<br/>
-                    </#list>
+                    <table class="phone">
+                        <tr th:each="phone: ${client.phones}">
+                            <td th:text="${phone.number}"></td>
+                        </tr>
+                        <tfoot>
+                            <tr>
+                                <td><a th:href="@{'/clients/phone-form?client_id=' + ${client.id}}">Добавить номер</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </td>
-    -->
             </tr>
-
-
         </tbody>
     </table>
 </div>

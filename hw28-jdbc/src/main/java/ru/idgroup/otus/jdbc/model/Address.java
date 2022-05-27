@@ -2,6 +2,7 @@ package ru.idgroup.otus.jdbc.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("address")
@@ -11,13 +12,14 @@ public class Address {
 
     private final String street;
 
-    private final Long client_id;
+    @Column("client_id")
+    private final Long clientId;
 
     @PersistenceConstructor
-    public Address(Long id, String street, Long client_id) {
+    public Address(Long id, String street, Long clientId) {
         this.id = id;
         this.street = street;
-        this.client_id = client_id;
+        this.clientId = clientId;
     }
 
     public Long getId() {
@@ -28,7 +30,7 @@ public class Address {
         return street;
     }
 
-    public Long getClient_id() {
-        return client_id;
+    public Long getClientId() {
+        return clientId;
     }
 }
