@@ -10,22 +10,21 @@ public class EnumeratorExecutor {
     public static final int MAX_COUNT = 10;
     public static final String START_COMMAND = "start";
     public static final String LAST_COMMAND = "last";
-    private static Thread first;
-    private static Thread second;
     private Integer currentNumber =  1;
+
+    private String last = LAST_COMMAND;
 
     private synchronized void action(String action) {
         while(!Thread.currentThread().isInterrupted()) {
 
             try {
                 while (currentNumber < MAX_COUNT) {
-                    logger.info(Thread.currentThread().getName() + " i:" + currentNumber);
+                    messagging(action);
                     notifierCommand(action, 1);
-                    this.wait();
                 }
 
                 while (currentNumber > 0) {
-                    logger.info(Thread.currentThread().getName() + " i:" + currentNumber);
+                    messagging(action);
                     notifierCommand(action,-1);
                     this.wait();
                 }
@@ -38,6 +37,13 @@ public class EnumeratorExecutor {
         }
     }
 
+    private void messagging(String action) throws InterruptedException {
+        while (last.equals(action))
+            this.wait();
+        last = action;
+        logger.info(Thread.currentThread().getName() + " i:" + currentNumber);
+    }
+
     private void notifierCommand(String action, int inc) {
         if (action.equals(LAST_COMMAND)) {
             this.notifyAll();
@@ -48,7 +54,10 @@ public class EnumeratorExecutor {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
+        Thread first;
+        Thread second;
+
         EnumeratorExecutor task = new EnumeratorExecutor();
         first = new Thread(() -> task.action(START_COMMAND));
         second = new Thread(() -> task.action(LAST_COMMAND));
