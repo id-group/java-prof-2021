@@ -13,13 +13,11 @@ public class GRPCClient {
 
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 8190;
-    public static final long START_VALUE = 0l;
-    public static final long END_VALUE = 30l;
-
-    private long currentValue = 0;
+    public static final long START_VALUE = 0L;
+    public static final long END_VALUE = 30L;
     private long lastServerValue = 0;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         var channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
                 .usePlaintext()
                 .build();
@@ -29,29 +27,27 @@ public class GRPCClient {
                 .setLastValue(END_VALUE)
                 .build();
 
-        var grpcClient = new GRPCClient();
-        grpcClient.go();
 
+        var grpcClient = new GRPCClient();
         var stub = RemoteSequenceGrpc.newStub(channel);
         stub.getSequence(requestSequenceMessage, new RequestObserver(grpcClient));
+
+        grpcClient.go();
     }
 
-    private void go() throws InterruptedException {
-        Thread thread1 = new Thread(() -> {
-            for(int i=0;i<50;i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                printValue(i);
+    private void go() {
+
+        for(int i=0;i<50;i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        });
-
-        thread1.start();
+            printValue(i);
+        }
     }
 
-    public void incCurrentNumber( long incValue ) {
+    public synchronized void incCurrentNumber( long incValue ) {
         lastServerValue = incValue;
     }
 
