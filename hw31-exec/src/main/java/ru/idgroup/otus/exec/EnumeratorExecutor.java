@@ -18,40 +18,39 @@ public class EnumeratorExecutor {
         while(!Thread.currentThread().isInterrupted()) {
 
             try {
-                while (currentNumber < MAX_COUNT) {
-                    messagging(action);
+                for(int i=1;i<=MAX_COUNT;i++) {
+                    while (last.equals(action) && i >= currentNumber)
+                        this.wait();
+                    messagging(action,i);
                     notifierCommand(action, 1);
                 }
 
-                while (currentNumber > 0) {
-                    messagging(action);
-                    notifierCommand(action,-1);
-                    this.wait();
+                currentNumber = 10;
+                for(int i=MAX_COUNT-1;i>0;i--) {
+                    while (last.equals(action) && i <= currentNumber)
+                        this.wait();
+                    messagging(action,i);
+                    notifierCommand(action, -1);
                 }
+
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            this.notifyAll();
-
             Thread.currentThread().interrupt();
         }
     }
 
-    private void messagging(String action) throws InterruptedException {
-        while (last.equals(action))
-            this.wait();
+    private void messagging(String action, int i) throws InterruptedException {
+        logger.info(Thread.currentThread().getName() + " i:" + i);
         last = action;
-        logger.info(Thread.currentThread().getName() + " i:" + currentNumber);
     }
 
     private void notifierCommand(String action, int inc) {
+        this.notifyAll();
         if (action.equals(LAST_COMMAND)) {
-            this.notifyAll();
             currentNumber = currentNumber + inc;
         }
-        if (action.equals(START_COMMAND)) {
-            this.notifyAll();
-        }
+
     }
 
     public static void main(String[] args) {
