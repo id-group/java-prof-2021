@@ -1,0 +1,15 @@
+###
+GET http://localhost:8081/clients
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+POST http://localhost:8081/clients
+Content-Type: application/json
+
+{
+   "name": "11112",
+   "address": "2222"
+}
+

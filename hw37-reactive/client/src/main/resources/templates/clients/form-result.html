@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Клиент: создание</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Клиент успешно создан.</h1>
+    <div><span>Имя:</span><span th:text="${client.name}"/></div>
+    <div><span>Адрес:</span><span th:text="${client.address}"/></div>
+    <div><a href="/clients">Перейти на странцу информации о клиентах</a></div>
+</body>
+</html>
