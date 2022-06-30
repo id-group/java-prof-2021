@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Телефон: создание</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Телефон успешно создан.</h1>
+    <div><span>ID:</span><span th:text="${phone.id}"/></div>
+    <div><span>Номер:</span><span th:text="${phone.number}"/></div>
+    <div><a href="/clients">Перейти на странцу информации о клиентах</a></div>
+</body>
+</html>
